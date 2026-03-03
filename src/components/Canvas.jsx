@@ -27,7 +27,7 @@ function ShapeRenderer({ element }) {
     }
 }
 
-function CanvasElement({ element, isSelected, onSelect, onDragStart, onDoubleClick }) {
+function CanvasElement({ element, isSelected, onSelect, onDragStart, onDoubleClick, onResizeStart }) {
     const style = {
         left: element.x,
         top: element.y,
@@ -48,6 +48,12 @@ function CanvasElement({ element, isSelected, onSelect, onDragStart, onDoubleCli
         if (element.type === 'text') {
             onDoubleClick(element.id);
         }
+    };
+
+    const handleResizeMouseDown = (e, corner) => {
+        e.stopPropagation();
+        e.preventDefault();
+        onResizeStart(e, element.id, corner);
     };
 
     return (
@@ -85,7 +91,10 @@ function CanvasElement({ element, isSelected, onSelect, onDragStart, onDoubleCli
             )}
             {isSelected && (
                 <>
-                    <div className="resize-handle bottom-right" data-resize="br" onMouseDown={(e) => e.stopPropagation()} />
+                    <div className="resize-handle top-left" onMouseDown={(e) => handleResizeMouseDown(e, 'tl')} />
+                    <div className="resize-handle top-right" onMouseDown={(e) => handleResizeMouseDown(e, 'tr')} />
+                    <div className="resize-handle bottom-left" onMouseDown={(e) => handleResizeMouseDown(e, 'bl')} />
+                    <div className="resize-handle bottom-right" onMouseDown={(e) => handleResizeMouseDown(e, 'br')} />
                 </>
             )}
         </div>
@@ -139,6 +148,23 @@ export default function Canvas() {
         setDragging({ id, startX, startY, elX, elY, scale });
     }, [elements, zoom]);
 
+    const handleResizeStart = useCallback((e, id, corner) => {
+        const el = elements.find((el) => el.id === id);
+        if (!el) return;
+        const scale = zoom / 100;
+        setResizing({
+            id,
+            corner,
+            startX: e.clientX,
+            startY: e.clientY,
+            elX: el.x,
+            elY: el.y,
+            elW: el.width,
+            elH: el.height,
+            scale,
+        });
+    }, [elements, zoom]);
+
     useEffect(() => {
         if (!dragging) return;
 
@@ -166,15 +192,42 @@ export default function Canvas() {
         if (!resizing) return;
 
         const handleMouseMove = (e) => {
-            const scale = zoom / 100;
-            const dx = (e.clientX - resizing.startX) / scale;
-            const dy = (e.clientY - resizing.startY) / scale;
-            const newW = Math.max(30, resizing.elW + dx);
-            const newH = Math.max(30, resizing.elH + dy);
-            resizeElement(resizing.id, newW, newH);
+            const dx = (e.clientX - resizing.startX) / resizing.scale;
+            const dy = (e.clientY - resizing.startY) / resizing.scale;
+
+            let newX = resizing.elX;
+            let newY = resizing.elY;
+            let newW = resizing.elW;
+            let newH = resizing.elH;
+
+            switch (resizing.corner) {
+                case 'br':
+                    newW = Math.max(30, resizing.elW + dx);
+                    newH = Math.max(30, resizing.elH + dy);
+                    break;
+                case 'bl':
+                    newW = Math.max(30, resizing.elW - dx);
+                    newH = Math.max(30, resizing.elH + dy);
+                    newX = resizing.elX + resizing.elW - newW;
+                    break;
+                case 'tr':
+                    newW = Math.max(30, resizing.elW + dx);
+                    newH = Math.max(30, resizing.elH - dy);
+                    newY = resizing.elY + resizing.elH - newH;
+                    break;
+                case 'tl':
+                    newW = Math.max(30, resizing.elW - dx);
+                    newH = Math.max(30, resizing.elH - dy);
+                    newX = resizing.elX + resizing.elW - newW;
+                    newY = resizing.elY + resizing.elH - newH;
+                    break;
+            }
+
+            resizeElement(resizing.id, newW, newH, newX, newY);
         };
 
         const handleMouseUp = () => {
+            commitMove();
             setResizing(null);
         };
 
@@ -184,35 +237,7 @@ export default function Canvas() {
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('mouseup', handleMouseUp);
         };
-    }, [resizing, zoom, resizeElement]);
-
-    // Handle resize handle mousedown
-    useEffect(() => {
-        const handleResizeStart = (e) => {
-            if (e.target.classList.contains('resize-handle')) {
-                e.stopPropagation();
-                e.preventDefault();
-                const parent = e.target.closest('.canvas-element');
-                const elId = elements.find(
-                    (el) => el.x === parseFloat(parent.style.left) && el.y === parseFloat(parent.style.top)
-                );
-                if (!elId) return;
-                setResizing({
-                    id: elId.id,
-                    startX: e.clientX,
-                    startY: e.clientY,
-                    elW: elId.width,
-                    elH: elId.height,
-                });
-            }
-        };
-
-        const canvas = canvasRef.current;
-        if (canvas) {
-            canvas.addEventListener('mousedown', handleResizeStart, true);
-            return () => canvas.removeEventListener('mousedown', handleResizeStart, true);
-        }
-    }, [elements]);
+    }, [resizing, resizeElement]);
 
     // Delete with keyboard
     useEffect(() => {
@@ -246,6 +271,7 @@ export default function Canvas() {
                             onSelect={selectElement}
                             onDragStart={handleDragStart}
                             onDoubleClick={handleDoubleClick}
+                            onResizeStart={handleResizeStart}
                         />
                     ))}
                 </div>
