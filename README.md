@@ -2,7 +2,7 @@
 
 A powerful online design editor built with React + Vite. Create stunning graphics with text, shapes, images, and custom backgrounds.
 
-## Features
+## ✨ Features
 
 - **Text Component** — Add headings (H1/H2), body text, small text, and font presets
 - **Quick Edit** — Edit all text elements at once from a sidebar panel
@@ -10,36 +10,24 @@ A powerful online design editor built with React + Vite. Create stunning graphic
 - **Elements** — 9 SVG shapes (rectangle, circle, triangle, star, diamond, hexagon, pentagon, arrow, heart)
 - **Background Customization** — Change background color (30+ presets + custom picker), upload background images, remove background
 - **Canvas Interactions** — Drag-and-drop, resize, inline text editing, select/delete
+- **Layers Panel** — Manage element ordering with layer controls
+- **Properties Panel** — Fine-tune element properties (position, size, colors, fonts)
+- **Template Presets** — Preset canvas sizes for social media, print, video, and more
 - **Zoom** — Zoom in/out with percentage display
 - **Undo/Redo** — Full history support
+- **Keyboard Shortcuts** — Built-in shortcuts for common actions
 - **Download** — Export your design as a PNG image
+- **Dark/Light Theme** — Toggle between dark and light modes
 
-## Tech Stack
+## 🛠️ Tech Stack
 
-- React 19
-- Vite 7
-- html2canvas (for PNG export)
-- Vanilla CSS (dark theme)
+- **React 19** — UI framework
+- **Vite 7** — Build tool & dev server
+- **Konva + React-Konva** — HTML5 Canvas rendering & interactions
+- **Vanilla CSS** — Custom styling with dark/light theme support
 
-## Getting Started
+## 🚀 Getting Started
 
 ```bash
 npm install
 npm run dev
-```
-
-Open [http://localhost:5173](http://localhost:5173) in your browser.
-
-## Build for Production
-
-```bash
-npm run build
-```
-
-## Live Demo
-
-[View Live Demo](#) *(add your deployment link here)*
-
-## License
-
-MIT
