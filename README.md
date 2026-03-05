@@ -115,10 +115,7 @@ design-editor/
 
 ## 🌐 Live Demo
 
-[View Live Demo](#) *(add your deployment link here)*
+https://design-editor-omega.vercel.app/
 
 ---
 
-## 📄 License
-
-MIT
