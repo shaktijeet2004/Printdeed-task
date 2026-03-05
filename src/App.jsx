@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { DesignProvider } from './context/DesignContext';
+import { ThemeProvider } from './context/ThemeContext';
 import TopBar from './components/TopBar';
 import Sidebar from './components/Sidebar';
 import Canvas from './components/Canvas';
@@ -8,6 +9,8 @@ import QuickEditPanel from './components/panels/QuickEditPanel';
 import ElementsPanel from './components/panels/ElementsPanel';
 import UploadsPanel from './components/panels/UploadsPanel';
 import BackgroundPanel from './components/panels/BackgroundPanel';
+import LayersPanel from './components/panels/LayersPanel';
+import PropertiesPanel from './components/panels/PropertiesPanel';
 
 const panelComponents = {
   text: TextPanel,
@@ -15,6 +18,8 @@ const panelComponents = {
   elements: ElementsPanel,
   uploads: UploadsPanel,
   background: BackgroundPanel,
+  layers: LayersPanel,
+  properties: PropertiesPanel,
 };
 
 function AppContent() {
@@ -36,8 +41,10 @@ function AppContent() {
 
 export default function App() {
   return (
-    <DesignProvider>
-      <AppContent />
-    </DesignProvider>
+    <ThemeProvider>
+      <DesignProvider>
+        <AppContent />
+      </DesignProvider>
+    </ThemeProvider>
   );
 }

@@ -5,6 +5,7 @@ const headingLevels = [
     { label: 'Add Subheading', fontSize: 22, fontWeight: 600, tag: 'H2' },
     { label: 'Add Body Text', fontSize: 16, fontWeight: 400, tag: 'P' },
     { label: 'Add Small Text', fontSize: 12, fontWeight: 400, tag: 'SM' },
+    { label: 'Add Caption', fontSize: 10, fontWeight: 300, tag: 'CAP' },
 ];
 
 const fontPresets = [
@@ -14,6 +15,16 @@ const fontPresets = [
     { name: 'Typewriter', fontFamily: 'Courier New, monospace', fontWeight: 400, fontSize: 18, style: 'normal', color: '#333' },
     { name: 'Clean Sans', fontFamily: 'Inter', fontWeight: 500, fontSize: 22, style: 'normal', color: '#222' },
     { name: 'Artistic', fontFamily: 'Georgia, serif', fontWeight: 700, fontSize: 26, style: 'normal', color: '#6c5ce7' },
+    { name: 'Handwritten', fontFamily: 'Trebuchet MS, sans-serif', fontWeight: 400, fontSize: 22, style: 'italic', color: '#e17055' },
+    { name: 'Minimal', fontFamily: 'Arial, sans-serif', fontWeight: 300, fontSize: 18, style: 'normal', color: '#636e72' },
+    { name: 'Display', fontFamily: 'Verdana, sans-serif', fontWeight: 700, fontSize: 30, style: 'uppercase', color: '#0984e3' },
+    { name: 'Classic', fontFamily: 'Times New Roman, serif', fontWeight: 400, fontSize: 22, style: 'normal', color: '#2d3436' },
+    { name: 'Neon', fontFamily: 'Inter', fontWeight: 600, fontSize: 24, style: 'normal', color: '#00cec9' },
+    { name: 'Retro', fontFamily: 'Courier New, monospace', fontWeight: 700, fontSize: 20, style: 'uppercase', color: '#fd79a8' },
+    { name: 'Headlines', fontFamily: 'Inter', fontWeight: 800, fontSize: 36, style: 'uppercase', color: '#d63031' },
+    { name: 'Soft', fontFamily: 'Georgia, serif', fontWeight: 300, fontSize: 20, style: 'italic', color: '#a29bfe' },
+    { name: 'Technical', fontFamily: 'Courier New, monospace', fontWeight: 500, fontSize: 16, style: 'normal', color: '#00b894' },
+    { name: 'Poster', fontFamily: 'Verdana, sans-serif', fontWeight: 800, fontSize: 32, style: 'normal', color: '#e84393' },
 ];
 
 export default function TextPanel() {
@@ -29,7 +40,8 @@ export default function TextPanel() {
             content: level.label === 'Add Heading' ? 'Your Heading'
                 : level.label === 'Add Subheading' ? 'Your Subheading'
                     : level.label === 'Add Body Text' ? 'Start typing your body text here...'
-                        : 'Small text',
+                        : level.label === 'Add Caption' ? 'Photo caption'
+                            : 'Small text',
             fontSize: level.fontSize,
             fontWeight: level.fontWeight,
             fontFamily: 'Inter, sans-serif',
@@ -73,7 +85,7 @@ export default function TextPanel() {
                     ))}
                 </div>
 
-                <div className="panel-section-title">Font Presets</div>
+                <div className="panel-section-title">Font Presets ({fontPresets.length})</div>
                 <div className="font-presets-grid">
                     {fontPresets.map((preset) => (
                         <button
@@ -86,6 +98,7 @@ export default function TextPanel() {
                                 fontStyle: preset.style === 'italic' ? 'italic' : 'normal',
                                 textTransform: preset.style === 'uppercase' ? 'uppercase' : 'none',
                                 fontSize: 13,
+                                color: preset.color,
                             }}
                         >
                             {preset.name}
